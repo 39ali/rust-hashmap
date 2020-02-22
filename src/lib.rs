@@ -2,6 +2,7 @@ use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 use std::mem;
 use std::borrow::Borrow;
+use std::ops::Index;
 
 pub struct HashMap<K, V> {
     buckets: Vec<Vec<(K, V)>>,
@@ -107,6 +108,18 @@ where
     }
 }
 
+
+impl<Q, K,V> Index<&Q> for  HashMap<K,V>
+where 
+Q:Eq+Hash+?Sized , 
+K: Eq+ Hash + Borrow<Q>
+{
+    type Output =V;
+    fn index(&self , key:&Q) ->&V
+    {
+       self.get(key).expect("entry not found")
+    }
+}
 
 pub struct Iter<'a,K:'a,V:'a>{
     map:&'a HashMap<K,V>,
